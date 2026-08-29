@@ -1,0 +1,16 @@
+[
+    {
+        "id": 200,
+        "name": "Set áo khoác măng tô",
+        "category": "váy",
+        "image": "./image/200.png",
+        "link": "https://shope.ee/..."
+    },
+    {
+        "id": 199,
+        "name": "Áo sơ mi lụa tơ tăm",
+        "category": "áo",
+        "image": "./image/199.png",
+        "link": "https://shope.ee/..."
+    }
+]
