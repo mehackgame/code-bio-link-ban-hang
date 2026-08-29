@@ -228,6 +228,9 @@ body {
 /* ==========================================
    3. THANH TÌM KIẾM BO TRÒN TỰ NHIÊN (CỐ ĐỊNH KHI CUỘN)
    ========================================== */
+/* ==========================================
+   3. THANH TÌM KIẾM BO TRÒN TỰ NHIÊN (CỐ ĐỊNH KHI CUỘN)
+   ========================================== */
 .search-box {
     position: sticky;
     top: 0;
@@ -255,7 +258,7 @@ body {
     border: 1px solid rgba(32, 213, 236, 0.6) !important;
     border-radius: 30px !important;
     color: #ffffff !important;
-    font-size: 14px;
+    font-size: 16px !important; /* Đặt 16px để ngăn iPhone tự động phóng to màn hình */
     font-weight: 500;
     outline: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 10px rgba(32, 213, 236, 0.15) !important;
@@ -264,7 +267,7 @@ body {
 
 .search-input::placeholder {
     color: #888899;
-    font-size: 13.5px;
+    font-size: 14px;
 }
 
 .search-input:hover,

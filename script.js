@@ -1,52 +1,51 @@
 // ========================================================
-// 1. DỮ LIỆU NHẬP TAY (Trực tiếp trong code)
+// MỤC 1: CẤU HÌNH BAN ĐẦU & DỮ LIỆU NHẬP TAY
 // ========================================================
-const manualProducts = [
-    {
-        id: 100,
-        name: "Áo khoác dạ nữ dáng ngắn (Nhập tay)",
-        category: "áo",
-        image: "./image/1.png",
-        link: "https://s.shopee.vn/2LXeNQ3rOw"
-    },
-    {
-        id: 99,
-        name: "Chân váy xếp li midi (Nhập tay)",
-        category: "váy",
-        image: "./image/2.png",
-        link: "https://s.shopee.vn/2LXeNQ3rOw"
-    }
-];
+// const manualProducts = [
+//     {
+//         id: 100,
+//         name: "Áo khoác dạ nữ dáng ngắn (Nhập tay)",
+//         category: "Áo khoác",
+//         image: "./image/1.png",
+//         link: "https://s.shopee.vn/2LXeNQ3rOw"
+//     },
+//     {
+//         id: 99,
+//         name: "Chân váy xếp li midi (Nhập tay)",
+//         category: "Váy / Set",
+//         image: "./image/2.png",
+//         link: "https://s.shopee.vn/2LXeNQ3rOw"
+//     }
+// ];
+// BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ TRÁNH LỖI (Khai báo mảng rỗng):
+const manualProducts = [];
 
-// ========================================================
-// 2. CẤU HÌNH GOOGLE SHEETS
-// ========================================================
+// Cấu hình kết nối Google Sheets
 const SHEET_ID = "125baWaNJszH0nielm1vWpmIISq3CRXXcmdQySrw6B-0"; 
 const SHEET_NAMES = ["Sheet1"];
 
+
 // ========================================================
-// 3. KHAI BÁO BIẾN TOÀN CỤC
+// MỤC 2: KHAI BÁO BIẾN TOÀN CỤC (GLOBAL VARIABLES)
 // ========================================================
 let allProducts = [];       // Lưu toàn bộ dữ liệu gộp
 let filteredProducts = [];  // Lưu kết quả sau lọc
 let currentCategory = 'all';// Danh mục đang chọn
-const PAGE_SIZE = 10;       // Số lượng sản phẩm hiển thị mỗi lần
+const PAGE_SIZE = 10;       // Số lượng sản phẩm hiển thị mỗi trang
 let visibleCount = PAGE_SIZE;
 
+
 // ========================================================
-// HÀM XỬ LÝ ẢNH CHỐNG BỊ CHẶN BỞI SHOPEE
+// MỤC 3: CÁC HÀM XỬ LÝ DỮ LIỆU & BẢO MẬT ẢNH
 // ========================================================
+// 3.1. Chống lỗi ảnh bị chặn bởi Shopee
 function getSafeImageUrl(url) {
     if (!url || url.trim() === '') return 'https://via.placeholder.com/300x400?text=Hình+Ảnh';
-    // Giữ nguyên đường dẫn nếu là ảnh lưu nội bộ trong thư mục máy
     if (url.startsWith('./') || url.startsWith('/') || url.startsWith('data:')) return url;
-    // Chạy qua máy chủ proxy để hiển thị ảnh Shopee 100% không bị ô trắng
     return `https://images.weserv.nl/?url=${encodeURIComponent(url.trim())}`;
 }
 
-// ========================================================
-// 4. HÀM CHUẨN HÓA DỮ LIỆU TỪ GOOGLE SHEETS
-// ========================================================
+// 3.2. Chuẩn hóa dữ liệu đầu vào từ Google Sheets
 function normalizeProduct(item) {
     return {
         id: item.id || item.ID || item.stt || item.STT || '',
@@ -57,8 +56,9 @@ function normalizeProduct(item) {
     };
 }
 
+
 // ========================================================
-// 5. HÀM TẢI VÀ GỘP DỮ LIỆU TỪ SHEETS & NHẬP TAY
+// MỤC 4: TẢI VÀ GỘP DỮ LIỆU (API FETCHING)
 // ========================================================
 async function loadProducts() {
     let sheetProducts = [];
@@ -84,8 +84,9 @@ async function loadProducts() {
     renderProducts();
 }
 
+
 // ========================================================
-// 6. HÀM HIỂN THỊ SẢN PHẨM & NÚT XEM THÊM
+// MỤC 5: HIỂN THỊ GIAO DIỆN SẢN PHẨM (RENDER UI)
 // ========================================================
 function renderProducts() {
     const container = document.getElementById('productList');
@@ -93,7 +94,6 @@ function renderProducts() {
     if (!container) return;
 
     container.innerHTML = '';
-    
     const itemsToShow = filteredProducts.slice(0, visibleCount);
 
     if (filteredProducts.length === 0) {
@@ -109,38 +109,36 @@ function renderProducts() {
         card.target = '_blank';
         card.rel = 'noopener noreferrer';
         
-        // Gọi hàm lấy link ảnh an toàn
         const safeImg = getSafeImageUrl(item.image);
 
-card.innerHTML = `
-    <div class="product-img-wrap">
-        <img src="${item.image}" referrerpolicy="no-referrer" loading="lazy" alt="${item.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x400?text=Hình+Ảnh';">
-    </div>
-    <div class="product-info-wrap">
-        <div class="product-number">${item.id}</div>
-        <div class="product-title">${item.name}</div>
-    </div>
-`;
+        card.innerHTML = `
+            <div class="product-img-wrap">
+                <img src="${safeImg}" referrerpolicy="no-referrer" loading="lazy" alt="${item.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x400?text=Hình+Ảnh';">
+            </div>
+            <div class="product-info-wrap">
+                <div class="product-number">${item.id}</div>
+                <div class="product-title">${item.name}</div>
+            </div>
+        `;
         container.appendChild(card);
     });
 
+    // Cấu hình hiển thị nút "Xem thêm"
     if (loadMoreBtn) {
-        if (visibleCount >= filteredProducts.length) {
-            loadMoreBtn.style.display = 'none';
-        } else {
-            loadMoreBtn.style.display = 'block';
-        }
+        loadMoreBtn.style.display = (visibleCount >= filteredProducts.length) ? 'none' : 'block';
     }
 }
 
-// ========================================================
-// 7. CÁC HÀM TƯƠNG TÁC (Tải thêm, Tìm kiếm, Lọc danh mục)
-// ========================================================
+// Nạp thêm sản phẩm khi bấm nút Xem thêm
 function loadMore() {
     visibleCount += PAGE_SIZE;
     renderProducts();
 }
 
+
+// ========================================================
+// MỤC 6: BỘ LỌC TÌM KIẾM & DANH MỤC (FILTER LOGIC)
+// ========================================================
 function filterProducts() {
     const searchInput = document.getElementById('searchInput');
     const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
@@ -160,47 +158,37 @@ function filterProducts() {
     renderProducts();
 }
 
-function filterCategory(cat, event) {
-    currentCategory = cat;
-
-    const buttons = document.querySelectorAll('.tag-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    
-    if (event && event.target) {
-        event.target.classList.add('active');
-    }
-
-    filterProducts();
-}
 
 // ========================================================
-// 8. KÍCH HOẠT KHI MỞ TRANG
+// MỤC 7: XỬ LÝ SỰ KIỆN KHI KHỞI TẠO TRANG (DOM LOADED)
 // ========================================================
 document.addEventListener('DOMContentLoaded', () => {
+    // 7.1. Tải danh sách sản phẩm ban đầu
     loadProducts();
 
+    // 7.2. Sự kiện Ô tìm kiếm & Nút xóa nhanh (X)
     const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', filterProducts);
-    }
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
 
-    const fileInput = document.getElementById('fileInput');
-    if (fileInput) {
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                alert(`Đã tải ảnh lên: "${file.name}". Đang tìm sản phẩm tương tự...`);
-                if (allProducts.length > 0) {
-                    filteredProducts = [allProducts[0]];
-                    visibleCount = PAGE_SIZE;
-                    renderProducts();
-                }
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            if (clearSearchBtn) {
+                clearSearchBtn.style.display = this.value.trim().length > 0 ? 'flex' : 'none';
             }
+            filterProducts();
         });
     }
-});
 
-document.addEventListener('DOMContentLoaded', function() {
+    if (clearSearchBtn && searchInput) {
+        clearSearchBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            clearSearchBtn.style.display = 'none';
+            searchInput.focus();
+            filterProducts();
+        });
+    }
+
+    // 7.3. Sự kiện Menu Popup Danh mục (Trượt từ dưới lên)
     const openBtn = document.getElementById('openCategoryBtn');
     const closeBtn = document.getElementById('closeCategoryBtn');
     const overlay = document.getElementById('categoryOverlay');
@@ -230,22 +218,22 @@ document.addEventListener('DOMContentLoaded', function() {
             catBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
 
-            const category = this.getAttribute('data-category');
-            if (typeof filterProducts === 'function') {
-                filterProducts(category);
-            }
-
+            currentCategory = this.getAttribute('data-category');
+            filterProducts();
             hideMenu();
         });
     });
 });
 
-// XỬ LÝ TỰ ĐỘNG HIỆN/ẨN NÚT QUAY LẠI ĐẦU TRANG
+
+// ========================================================
+// MỤC 8: TIỆN ÍCH CUỘN VỀ ĐẦU TRANG (BACK TO TOP)
+// ========================================================
+// 8.1. Kiểm tra vị trí cuộn để ẩn/hiện nút (Chỉnh 300px để hiện chậm hơn)
 window.addEventListener('scroll', function() {
     const btn = document.getElementById('backToTopBtn');
     if (btn) {
-        // Cuộn xuống quá 100px là hiện nút ngay lập tức
-        if (window.scrollY > 100 || document.documentElement.scrollTop > 100) {
+        if (window.scrollY > 900 || document.documentElement.scrollTop > 900) {
             btn.classList.add('show');
         } else {
             btn.classList.remove('show');
@@ -253,8 +241,7 @@ window.addEventListener('scroll', function() {
     }
 });
 
-
-// Bấm vào nút sẽ cuộn mượt lên trên cùng
+// 8.2. Sự kiện bấm cuộn mượt lên trên cùng
 document.addEventListener('click', function(e) {
     if (e.target && e.target.closest('#backToTopBtn')) {
         window.scrollTo({
@@ -263,26 +250,3 @@ document.addEventListener('click', function(e) {
         });
     }
 });
-// Thêm vào bên trong hàm setupEvents() trong script.js
-const searchInput = document.getElementById('searchInput');
-const clearSearchBtn = document.getElementById('clearSearchBtn');
-
-if (searchInput && clearSearchBtn) {
-    // Hiện/Ẩn nút (X) theo trạng thái ô nhập
-    searchInput.addEventListener('input', function() {
-        if (this.value.trim().length > 0) {
-            clearSearchBtn.style.display = 'flex';
-        } else {
-            clearSearchBtn.style.display = 'none';
-        }
-        applyFilter(); // Gọi lại hàm lọc sản phẩm
-    });
-
-    // Bấm nút (X) để xóa nhanh toàn bộ nội dung tìm kiếm
-    clearSearchBtn.addEventListener('click', function() {
-        searchInput.value = '';
-        clearSearchBtn.style.display = 'none';
-        searchInput.focus();
-        applyFilter(); // Reset danh sách sản phẩm về ban đầu
-    });
-}

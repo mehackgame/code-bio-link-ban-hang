@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    <!-- ==========================================
+         MỤC 1: CẤU HÌNH HEAD & THƯ VIỆN
+         ========================================== -->
+    <!-- 1.1. Metadata & Viewport -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- BỎ CHẶN ẢNH SHOPEE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer">
-
     <title>Bio Bán Hàng - Minh Store</title>
-    
-    <!-- Google Fonts -->
+
+    <!-- 1.2. Thư viện bên ngoài (Fonts & Icons) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- File CSS chính -->
+
+    <!-- 1.3. File CSS chính -->
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- KHUNG GIAO DIỆN CHÍNH -->
-    <div class="container">
+    <!-- ==========================================
+         MỤC 2: KHUNG GIAO DIỆN CHÍNH (MAIN CONTAINER)
+         ========================================== -->
+    <main class="container">
 
-        <!-- 1. HEADER CHÍNH -->
-        <div class="bio-header">
+        <!-- 2.1. Header: Profile, Hướng dẫn & Mạng xã hội -->
+        <header class="bio-header">
             <button type="button" class="top-left-cat-btn" id="openCategoryBtn">
                 <i class="fa-solid fa-bars"></i>
                 <span>Menu</span>
@@ -36,13 +37,12 @@
             <div class="bio-avatar-wrap">
                 <img src="./image/4.png" alt="Avatar Minh store" class="bio-avatar">
             </div>
-            
+
             <h1 class="bio-username">
                 Minh store <i class="fa-solid fa-circle-check verified-badge" title="Đã xác minh"></i>
             </h1>
             <p class="bio-subtitle">Tổng hợp Outfit & Deal Hot Xinh Đẹp ✨</p>
 
-            <!-- Hướng dẫn tìm đồ -->
             <div class="guide-box">
                 <div class="guide-title">💡 HƯỚNG DẪN TÌM ĐỒ</div>
                 <div class="guide-step">
@@ -55,38 +55,41 @@
                 </div>
             </div>
 
-            <!-- Nút MXH -->
             <div class="social-links">
-                <a href="#" target="_blank" class="social-btn tiktok">
+                <a href="#" target="_blank" class="social-btn tiktok" rel="noopener noreferrer">
                     <i class="fab fa-tiktok"></i>
                     <span>Kênh TikTok Official</span>
                 </a>
             </div>
-        </div>
+        </header>
 
-        <!-- 2. THANH TÌM KIẾM BO TRÒN (ĐÃ FIX MÀU NỀN VÀ KHỐI VUÔNG THỪA) -->
-        <div class="search-box">
+        <!-- 2.2. Thanh tìm kiếm -->
+        <section class="search-box">
             <div class="search-wrapper">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
                 <input type="text" id="searchInput" class="search-input" placeholder="Tìm tên sản phẩm, mã số..." autocomplete="off">
                 <button type="button" id="clearSearchBtn" class="clear-search-btn" title="Xóa nhanh">&times;</button>
             </div>
-        </div>
+        </section>
 
-        <!-- 3. DANH SÁCH SẢN PHẨM -->
-        <div id="productList" class="product-list"></div>
+        <!-- 2.3. Danh sách sản phẩm (Hiển thị bằng JS) -->
+        <section id="productList" class="product-list"></section>
 
-        <!-- 4. NÚT XEM THÊM (NẮM Ở ĐẦY TỰ NHIÊN DƯỚI DÀN SẢN PHẨM) -->
+        <!-- 2.4. Nút tải thêm sản phẩm -->
         <div class="load-more-wrapper">
             <button id="loadMoreBtn" class="load-more-btn" onclick="loadMore()">Xem thêm sản phẩm ∨</button>
         </div>
 
-    </div>
+    </main>
 
-    <!-- POPUP MENU DANH MỤC -->
+    <!-- ==========================================
+         MỤC 3: POPUP & MENU TRƯỢT (MODALS / DRAWERS)
+         ========================================== -->
+    <!-- 3.1. Layer nền mờ -->
     <div class="category-overlay" id="categoryOverlay"></div>
 
-    <div class="category-drawer" id="categoryDrawer">
+    <!-- 3.2. Menu danh mục sản phẩm -->
+    <aside class="category-drawer" id="categoryDrawer" aria-label="Danh mục sản phẩm">
         <div class="drawer-header">
             <div class="drawer-title">
                 <i class="fa-solid fa-layer-group"></i>
@@ -94,7 +97,8 @@
             </div>
             <button type="button" id="closeCategoryBtn" class="drawer-close-btn">&times;</button>
         </div>
-        <div class="drawer-body" id="categoryListMenu">
+
+        <nav class="drawer-body" id="categoryListMenu">
             <button type="button" class="menu-cat-btn active" data-category="all">
                 <i class="fa-solid fa-border-all"></i> Tất cả sản phẩm
             </button>
@@ -107,15 +111,18 @@
             <button type="button" class="menu-cat-btn" data-category="Quần">
                 <i class="fa-solid fa-socks"></i> Quần
             </button>
-        </div>
-    </div>
+        </nav>
+    </aside>
 
-    <!-- NÚT QUAY LẠI ĐẦU TRANG -->
+    <!-- ==========================================
+         MỤC 4: TIỆN ÍCH & NỐI FILE JAVASCRIPT
+         ========================================== -->
+    <!-- 4.1. Nút cuộn lên đầu trang -->
     <button type="button" id="backToTopBtn" class="back-to-top-btn" title="Quay lên đầu trang">
         <i class="fa-solid fa-arrow-up"></i>
     </button>
 
-    <!-- JS -->
+    <!-- 4.2. File JS xử lý logic -->
     <script src="script.js"></script>
 
 </body>
